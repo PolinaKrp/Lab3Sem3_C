@@ -1,4 +1,3 @@
-#pragma once
 #include <iostream>
 #include <math.h>
 #include <iomanip>
@@ -25,7 +24,7 @@ template <typename T>
 class BinaryImg
 {
 private:
-    std::vector<std::vector<T>> matrix;
+    std::vector<std::vector<T>> array;
     int row;
     int col;
     BinaryImg<T> And(T rhs) const
@@ -35,12 +34,12 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) * rhs > std::numeric_limits<T>::max() || matrix.at(i).at(j) * rhs < std::numeric_limits<T>::min())
+                if (array[i][j] * rhs > std::numeric_limits<T>::max() || array[i][j] * rhs < std::numeric_limits<T>::min())
                 {
-                    result.matrix.at(i).at(j) = 0;
+                    result.array[i][j] = 0;
                 }
                 else {
-                    result.matrix.at(i).at(j) = matrix.at(i).at(j) * rhs;
+                    result.array[i][j] = array[i][j] * rhs;
                 }
             }
         }
@@ -53,12 +52,12 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) + rhs > std::numeric_limits<T>::max() || matrix.at(i).at(j) + rhs < std::numeric_limits<T>::min())
+                if (array[i][j] + rhs > std::numeric_limits<T>::max() || array[i][j] + rhs < std::numeric_limits<T>::min())
                 {
-                    result.matrix.at(i).at(j) = 0;
+                    result.array[i][j] = 0;
                 }
                 else {
-                    result.matrix.at(i).at(j) = matrix.at(i).at(j) + rhs;
+                    result.array[i][j] = array[i][j] + rhs;
                 }
             }
         }
@@ -72,13 +71,13 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) * src.matrix.at(i).at(j) > std::numeric_limits<T>::max() || matrix.at(i).at(j) * src.matrix.at(i).at(j) < std::numeric_limits<T>::min())
+                if (array[i][j] * src.array[i][j] > std::numeric_limits<T>::max() || array[i][j] * src.array[i][j] < std::numeric_limits<T>::min())
                 {
-                    result.matrix.at(i).at(j) = 0;
+                    result.array[i][j] = 0;
                 }
                 else
                 {
-                    result.matrix.at(i).at(j) = matrix.at(i).at(j) * src.matrix.at(i).at(j);
+                    result.array[i][j] = array[i][j] * src.array[i][j];
                 }
             }
         }
@@ -92,13 +91,13 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) + src.matrix.at(i).at(j) > std::numeric_limits<T>::max() || matrix.at(i).at(j) + src.matrix.at(i).at(j) < std::numeric_limits<T>::min())
+                if (array[i][j] + src.array[i][j] > std::numeric_limits<T>::max() || array[i][j] + src.array[i][j] < std::numeric_limits<T>::min())
                 {
-                    result.matrix.at(i).at(j) = 0;
+                    result.array[i][j] = 0;
                 }
                 else
                 {
-                    result.matrix.at(i).at(j) = matrix.at(i).at(j) + src.matrix.at(i).at(j);
+                    result.array[i][j] = array[i][j] + src.array[i][j];
                 }
             }
         }
@@ -113,9 +112,9 @@ public:
         row = x;
         col = y;
         for (int i = 0; i < row; i++) {
-            matrix.push_back(std::vector<T>());
+            array.push_back(std::vector<T>());
             for (int j = 0; j < col; j++) {
-                matrix.back().push_back(0);
+                array.back().push_back(0);
             }
         }
     }
@@ -127,12 +126,14 @@ public:
     int GetRow() const { return row; }
     int GetCol() const { return col; }
 
+
+
     auto begin() {
-        return matrix.begin();
+        return array.begin();  
     }
 
     auto end() {
-        return matrix.end();
+        return array.end(); 
     }
 
     bool operator==(const BinaryImg<T>& src) const
@@ -142,7 +143,7 @@ public:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) != src.matrix.at(i).at(j)) { return false; }
+                if (array[i][j] != src.array[i][j]) { return false; }
             }
         }
         return true;
@@ -159,8 +160,7 @@ public:
         {
             throw EClassException("invalid index");
         }
-        //T tmp = matrix.at(x).at(y);
-        return matrix.at(x).at(y);
+        return array[x][y];
     }
 
     void operator()(int x, int y, T value)
@@ -169,7 +169,7 @@ public:
         {
             throw EClassException("invalid index");
         }
-        matrix.at(x).at(y) = value;
+        array.at(x).at(y) = value;
     }
 
     T operator()(int x, int y) const
@@ -178,7 +178,7 @@ public:
         {
             throw EClassException("invalid index");
         }
-        return matrix.at(x).at(y);
+        return array[x][y];
     }
 
     BinaryImg<T> operator+(const BinaryImg<T>& src) const
@@ -207,13 +207,13 @@ public:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) == 0)
+                if (array[i][j] == 0)
                 {
-                    matrix.at(i).at(j) = std::numeric_limits<T>::max();
+                    array[i][j] = std::numeric_limits<T>::max();
                 }
                 else
                 {
-                    matrix.at(i).at(j) = 0;
+                    array[i][j] = 0;
                 }
             }
         }
@@ -229,7 +229,7 @@ public:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j)) { k++; }
+                if (array[i][j]) { k++; }
             }
         }
         double res = (double)k / (row * col);
@@ -245,11 +245,12 @@ public:
     }
 };
 
+
 template <>
 class BinaryImg<bool>
 {
 private:
-    std::vector<std::vector<bool>> matrix;
+    std::vector<std::vector<bool>> array;
     int row;
     int col;
     BinaryImg<bool> And(bool rhs) const
@@ -259,12 +260,12 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) * rhs > std::numeric_limits<bool>::max() || matrix.at(i).at(j) * rhs < std::numeric_limits<bool>::min())
+                if (array[i][j] * rhs > std::numeric_limits<bool>::max() || array[i][j] * rhs < std::numeric_limits<bool>::min())
                 {
-                    result.matrix.at(i).at(j) = 0;
+                    result.array[i][j] = 0;
                 }
                 else {
-                    result.matrix.at(i).at(j) = matrix.at(i).at(j) * rhs;
+                    result.array[i][j] = array[i][j] * rhs;
                 }
             }
         }
@@ -277,12 +278,12 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) + rhs > std::numeric_limits<bool>::max() || matrix.at(i).at(j) + rhs < std::numeric_limits<bool>::min())
+                if (array[i][j] + rhs > std::numeric_limits<bool>::max() || array[i][j] + rhs < std::numeric_limits<bool>::min())
                 {
-                    result.matrix.at(i).at(j) = 0;
+                    result.array[i][j] = 0;
                 }
                 else {
-                    result.matrix.at(i).at(j) = matrix.at(i).at(j) + rhs;
+                    result.array[i][j] = array[i][j] + rhs;
                 }
             }
         }
@@ -296,13 +297,13 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) * src.matrix.at(i).at(j) > std::numeric_limits<bool>::max() || matrix.at(i).at(j) * src.matrix.at(i).at(j) < std::numeric_limits<bool>::min())
+                if (array[i][j] * src.array[i][j] > std::numeric_limits<bool>::max() || array[i][j] * src.array[i][j] < std::numeric_limits<bool>::min())
                 {
-                    result.matrix.at(i).at(j) = 0;
+                    result.array[i][j] = 0;
                 }
                 else
                 {
-                    result.matrix.at(i).at(j) = matrix.at(i).at(j) * src.matrix.at(i).at(j);
+                    result.array[i][j] = array[i][j] * src.array[i][j];
                 }
             }
         }
@@ -316,13 +317,13 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) + src.matrix.at(i).at(j) > std::numeric_limits<bool>::max() || matrix.at(i).at(j) + src.matrix.at(i).at(j) < std::numeric_limits<bool>::min())
+                if (array[i][j] + src.array[i][j] > std::numeric_limits<bool>::max() || array[i][j] + src.array[i][j] < std::numeric_limits<bool>::min())
                 {
-                    result.matrix.at(i).at(j) = 0;
+                    result.array[i][j] = 0;
                 }
                 else
                 {
-                    result.matrix.at(i).at(j) = matrix.at(i).at(j) + src.matrix.at(i).at(j);
+                    result.array[i][j] = array[i][j] + src.array[i][j];
                 }
             }
         }
@@ -337,9 +338,9 @@ public:
         row = x;
         col = y;
         for (int i = 0; i < row; i++) {
-            matrix.push_back(std::vector<bool>());
+            array.push_back(std::vector<bool>());
             for (int j = 0; j < col; j++) {
-                matrix.back().push_back(0);
+                array.back().push_back(0);
             }
         }
     }
@@ -352,16 +353,16 @@ public:
     int GetCol() const { return col; }
 
     auto begin() {
-        return matrix.begin();
+        return array.begin();
     }
 
     auto end() {
-        return matrix.end();
+        return array.end();
     }
 
     friend std::ostream& operator<<(std::ostream& os, BinaryImg<bool>& obj)
     {
-        for (auto i : obj.matrix) {
+        for (auto i : obj.array) {
             for (auto j : i) {
                 std::cout << j << std::setw(2);
             }
@@ -377,7 +378,7 @@ public:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) != src.matrix.at(i).at(j)) { return false; }
+                if (array[i][j] != src.array[i][j]) { return false; }
             }
         }
         return true;
@@ -394,7 +395,7 @@ public:
         {
             throw EClassException("invalid index");
         }
-        bool res = matrix.at(x).at(y);
+        bool res = array[x][y];
         return res;
     }
 
@@ -404,7 +405,7 @@ public:
         {
             throw EClassException("invalid index");
         }
-        matrix.at(x).at(y) = value;
+        array[x][y] = value;
     }
 
     bool operator()(int x, int y) const
@@ -413,7 +414,7 @@ public:
         {
             throw EClassException("invalid index");
         }
-        return matrix.at(x).at(y);
+        return array[x][y];
     }
 
     BinaryImg<bool> operator+(const BinaryImg<bool>& src) const
@@ -442,13 +443,13 @@ public:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) == 0)
+                if (array[i][j] == 0)
                 {
-                    matrix.at(i).at(j) = std::numeric_limits<bool>::max();
+                    array[i][j] = std::numeric_limits<bool>::max();
                 }
                 else
                 {
-                    matrix.at(i).at(j) = 0;
+                    array[i][j] = 0;
                 }
             }
         }
@@ -464,7 +465,7 @@ public:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j)) { k++; }
+                if (array[i][j]) { k++; }
             }
         }
         double res = (double)k / (row * col);
@@ -485,7 +486,7 @@ template <>
 class BinaryImg<char>
 {
 private:
-    std::vector<std::vector<char>> matrix;
+    std::vector<std::vector<char>> array;
     int row;
     int col;
     BinaryImg<char> And(char rhs) const
@@ -495,13 +496,13 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if ((int)matrix.at(i).at(j) * (int)rhs > (int)std::numeric_limits<char>::max() || (int)matrix.at(i).at(j) * (int)rhs < (int)std::numeric_limits<char>::min())
+                if ((int)array[i][j] * (int)rhs > (int)std::numeric_limits<char>::max() || (int)array[i][j] * (int)rhs < (int)std::numeric_limits<char>::min())
                 {
-                    result.matrix.at(i).at(j) = '0';
+                    result.array[i][j] = '0';
                 }
                 else
                 {
-                    result.matrix.at(i).at(j) = (int)matrix.at(i).at(j) * (int)rhs;
+                    result.array[i][j] = (int)array[i][j] * (int)rhs;
                 }
             }
         }
@@ -514,13 +515,13 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if ((int)matrix.at(i).at(j) + (int)rhs > (int)std::numeric_limits<char>::max() || (int)matrix.at(i).at(j) + (int)rhs < (int)std::numeric_limits<char>::min())
+                if ((int)array[i][j] + (int)rhs > (int)std::numeric_limits<char>::max() || (int)array[i][j] + (int)rhs < (int)std::numeric_limits<char>::min())
                 {
-                    result.matrix.at(i).at(j) = '0';
+                    result.array[i][j] = '0';
                 }
                 else
                 {
-                    result.matrix.at(i).at(j) = (int)matrix.at(i).at(j) + (int)rhs;
+                    result.array[i][j] = (int)array[i][j] + (int)rhs;
                 }
             }
         }
@@ -534,13 +535,13 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if ((int)matrix.at(i).at(j) * (int)src.matrix.at(i).at(j) > (int)std::numeric_limits<char>::max() || (int)matrix.at(i).at(j) * (int)src.matrix.at(i).at(j) < (int)std::numeric_limits<char>::min())
+                if ((int)array[i][j] * (int)src.array[i][j] > (int)std::numeric_limits<char>::max() || (int)array[i][j] * (int)src.array[i][j] < (int)std::numeric_limits<char>::min())
                 {
-                    result.matrix.at(i).at(j) = '0';
+                    result.array[i][j] = '0';
                 }
                 else
                 {
-                    result.matrix.at(i).at(j) = (int)matrix.at(i).at(j) * (int)src.matrix.at(i).at(j);
+                    result.array[i][j] = (int)array[i][j] * (int)src.array[i][j];
                 }
             }
         }
@@ -554,13 +555,13 @@ private:
         {
             for (int j = 0; j < col; j++)
             {
-                if ((int)matrix.at(i).at(j) + (int)src.matrix.at(i).at(j) > (int)std::numeric_limits<char>::max() || (int)matrix.at(i).at(j) + (int)src.matrix.at(i).at(j) < (int)std::numeric_limits<char>::min())
+                if ((int)array[i][j] + (int)src.array[i][j] > (int)std::numeric_limits<char>::max() || (int)array[i][j] + (int)src.array[i][j] < (int)std::numeric_limits<char>::min())
                 {
-                    result.matrix.at(i).at(j) = '0';
+                    result.array[i][j] = '0';
                 }
                 else
                 {
-                    result.matrix.at(i).at(j) = (int)matrix.at(i).at(j) + (int)src.matrix.at(i).at(j);
+                    result.array[i][j] = (int)array[i][j] + (int)src.array[i][j];
                 }
             }
         }
@@ -574,9 +575,9 @@ public:
         row = x;
         col = y;
         for (int i = 0; i < row; i++) {
-            matrix.push_back(std::vector<char>());
+            array.push_back(std::vector<char>());
             for (int j = 0; j < col; j++) {
-                matrix.back().push_back('0');
+                array.back().push_back('0');
             }
         }
     }
@@ -588,18 +589,17 @@ public:
     int GetRow() const { return row; }
     int GetCol() const { return col; }
 
-    //std::vector<char>::iterator
     auto begin() {
-        return matrix.begin();
+        return array.begin();
     }
 
     auto end() {
-        return matrix.end();
+        return array.end();
     }
 
     friend std::ostream& operator<<(std::ostream& os, BinaryImg<char>& obj)
     {
-        for (auto i : obj.matrix) {
+        for (auto i : obj.array) {
             for (auto j : i) {
                 std::cout << j << std::setw(2);
             }
@@ -616,7 +616,7 @@ public:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) != src.matrix.at(i).at(j)) { return false; }
+                if (array[i][j] != src.array[i][j]) { return false; }
             }
         }
         return true;
@@ -631,7 +631,7 @@ public:
         {
             throw EClassException("invalid index");
         }
-        return matrix.at(x).at(y);
+        return array[x][y];
     }
     char operator()(int x, int y) const
     {
@@ -639,7 +639,7 @@ public:
         {
             throw EClassException("invalid index");
         }
-        return matrix.at(x).at(y);
+        return array[x][y];
     }
     BinaryImg<char> operator+(const BinaryImg<char>& src) const
     {
@@ -663,13 +663,13 @@ public:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) == '0')
+                if (array[i][j] == '0')
                 {
-                    matrix.at(i).at(j) = std::numeric_limits<char>::max();
+                    array[i][j] = std::numeric_limits<char>::max();
                 }
                 else
                 {
-                    matrix.at(i).at(j) = '0';
+                    array[i][j] = '0';
                 }
             }
         }
@@ -685,7 +685,7 @@ public:
         {
             for (int j = 0; j < col; j++)
             {
-                if (matrix.at(i).at(j) != '0') { k++; }
+                if (array[i][j] != '0') { k++; }
             }
         }
         double res = (double)k / (row * col);
